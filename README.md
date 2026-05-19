@@ -1,2 +1,0 @@
-# Smart-Library-Project
-DS
