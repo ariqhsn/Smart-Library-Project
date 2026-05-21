@@ -95,4 +95,165 @@ public class BookBST {
     public void setRoot(Book root) {
         this.root = root;
     }
+
+    // Person 2
+    // SEARCH (Person 2)
+    public Book search(String isbnInput) {
+
+        // ISBN VALIDATION
+        if (isbnInput == null || isbnInput.trim().isEmpty()) {
+            System.out.println("[Error] ISBN cannot be empty.");
+            return null;
+        }
+
+        isbnInput = isbnInput.trim();
+
+        if (!isbnInput.matches("\\d+")) {
+            System.out.println("[Error] ISBN must contain numbers only.");
+            return null;
+        }
+
+        int isbn = Integer.parseInt(isbnInput);
+
+        if (isbn <= 0) {
+            System.out.println("[Error] ISBN must be a positive number.");
+            return null;
+        }
+
+        // Perform recursive search
+        Book result = searchRec(root, isbn);
+
+        if (result == null) {
+            System.out.println("[Not Found] No book with ISBN " + isbn + " in catalogue.");
+        }
+
+        return result;
+    }
+
+    // Recursive search helper
+    private Book searchRec(Book node, int isbn) {
+
+        if (node == null || node.getIsbn() == isbn) {
+            return node;
+        }
+
+        // Go LEFT if isbn is smaller
+        if (isbn < node.getIsbn()) {
+            return searchRec(node.left, isbn);
+        }
+
+        // Go RIGHT if isbn is larger
+        return searchRec(node.right, isbn);
+    }
+
+    // DISPLAY ALL (Person 2)
+    public void displayAll() {
+
+        if (root == null) {
+            System.out.println("[Info] Catalogue is empty.");
+            return;
+        }
+
+        System.out.println("\n===== Book Catalogue (sorted by ISBN) =====");
+        displayInOrder(root);
+        System.out.println("===========================================\n");
+    }
+
+    // Recursive in-order traversal: LEFT -> ROOT -> RIGHT
+    // This prints books in ascending ISBN order
+    private void displayInOrder(Book node) {
+
+        if (node == null) {
+            return;
+        }
+
+        displayInOrder(node.left);   // Visit left subtree first
+        node.displayInfo();          // Print current node
+        displayInOrder(node.right);  // Visit right subtree last
+    }
+
+    // DELETE (Person 2)
+    public void delete(String isbnInput) {
+
+        // ISBN VALIDATION
+        if (isbnInput == null || isbnInput.trim().isEmpty()) {
+            System.out.println("[Error] ISBN cannot be empty.");
+            return;
+        }
+
+        isbnInput = isbnInput.trim();
+
+        if (!isbnInput.matches("\\d+")) {
+            System.out.println("[Error] ISBN must contain numbers only.");
+            return;
+        }
+
+        int isbn = Integer.parseInt(isbnInput);
+
+        if (isbn <= 0) {
+            System.out.println("[Error] ISBN must be a positive number.");
+            return;
+        }
+
+        // Check if book exists first
+        if (searchRec(root, isbn) == null) {
+            System.out.println("[Not Found] No book with ISBN " + isbn + " in catalogue.");
+            return;
+        }
+
+        root = deleteRec(root, isbn);
+        System.out.println("[Success] Book with ISBN " + isbn + " removed from catalogue.");
+    }
+
+    // Recursive delete helper — handles 3 BST cases
+    private Book deleteRec(Book node, int isbn) {
+
+        // Base case: node not found
+        if (node == null) {
+            return null;
+        }
+
+        // Navigate to the target node
+        if (isbn < node.getIsbn()) {
+            node.left = deleteRec(node.left, isbn);
+
+        } else if (isbn > node.getIsbn()) {
+            node.right = deleteRec(node.right, isbn);
+
+        } else {
+            // TARGET FOUND — handle 3 cases:
+
+            // Case 1: No children (leaf node) — just remove it
+            if (node.left == null && node.right == null) {
+                return null;
+            }
+
+            // Case 2a: Only right child — replace with right child
+            if (node.left == null) {
+                return node.right;
+            }
+
+            // Case 2b: Only left child — replace with left child
+            if (node.right == null) {
+                return node.left;
+            }
+
+            // Case 3: Two children — replace with in-order successor
+            Book successor = findMin(node.right);
+            node.right = deleteRec(node.right, successor.getIsbn());
+
+            // Copy successor's data into current node
+            return new Book(successor.getIsbn(), successor.getTitle(), successor.getAuthor());
+        }
+
+        return node;
+    }
+
+    // Helper: find the minimum node (leftmost) in a subtree
+    private Book findMin(Book node) {
+        while (node.left != null) {
+            node = node.left;
+        }
+        return node;
+    }
 }
