@@ -25,7 +25,7 @@ public class BookBST {
             return;
         }
 
-        // Convert String -> int
+        // Convert String to int
         int isbn = Integer.parseInt(isbnInput);
 
         if (isbn <= 0) {
