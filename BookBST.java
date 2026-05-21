@@ -1,42 +1,98 @@
+// BOOK BST
 public class BookBST {
-    // The root of the Binary Search Tree is kept private (Information Hiding)
+
+    // Root node of the BST
     private Book root;
 
-    // INSERTION LOGIC
-    
-    // Main insert method called by Member 4 in SmartLibrary.java
-    public void insert(int isbn, String t, String a) {
-        root = ins(root, isbn, t, a);
+    // Constructor
+    public BookBST() {
+        this.root = null;
     }
 
-    // Recursive helper method to insert a book based on its ISBN
-    private Book ins(Book r, int i, String t, String a) {
-        // Base Case: If the current node is null, create the new Book object here
-        if (r == null) {
-            return new Book(i, t, a);
+    // Insert a book into the BST
+    public void insert(String isbnInput, String title, String author) {
+
+        // ISBN VALIDATION
+        if (isbnInput == null || isbnInput.trim().isEmpty()) {
+            System.out.println("[Error] ISBN cannot be empty.");
+            return;
         }
-        
-        // Recursive Step: If the new ISBN is smaller, navigate to the left subtree
-        if (i < r.isbn) {
-            r.left = ins(r.left, i, t, a);
-        } 
-        // Recursive Step: If the new ISBN is larger, navigate to the right subtree
-        else if (i > r.isbn) {
-            r.right = ins(r.right, i, t, a);
+
+        isbnInput = isbnInput.trim();
+
+        if (!isbnInput.matches("\\d+")) {
+            System.out.println("[Error] ISBN must contain numbers only.");
+            return;
         }
-        // If the ISBN already exists (duplicate), it is ignored in a standard BST
-        
-        return r;
+
+        // Convert String -> int
+        int isbn = Integer.parseInt(isbnInput);
+
+        if (isbn <= 0) {
+            System.out.println("[Error] ISBN must be a positive number.");
+            return;
+        }
+
+        // TITLE VALIDATION
+        if (title == null || title.trim().isEmpty()) {
+            System.out.println("[Error] Title cannot be empty.");
+            return;
+        }
+
+        title = title.trim();
+
+        // AUTHOR VALIDATION
+        if (author == null || author.trim().isEmpty()) {
+            System.out.println("[Error] Author cannot be empty.");
+            return;
+        }
+
+        author = author.trim();
+
+        if (author.matches(".*\\d.*")) {
+            System.out.println("[Error] Author name cannot contain numbers.");
+            return;
+        }
+
+        // Insert into BST
+        root = insertRec(root, isbn, title, author);
     }
 
-    // SEARCH LOGIC (bukan punya gw ini intinya)
+    // Recursive insert helper
+    private Book insertRec(Book node, int isbn, String title, String author) {
 
-    public Book search(int i) {
-        return sea(root, i);
+        // Base case: empty spot found
+        if (node == null) {
+            System.out.println("[Success] Book \"" + title + "\" added to catalogue.");
+            return new Book(isbn, title, author);
+        }
+
+        // Duplicate ISBN check
+        if (isbn == node.getIsbn()) {
+            System.out.println("[Warning] ISBN " + isbn + " already exists in catalogue.");
+            return node;
+        }
+
+        // Go LEFT if isbn is smaller
+        if (isbn < node.getIsbn()) {
+            node.left = insertRec(node.left, isbn, title, author);
+        }
+
+        // Go RIGHT if isbn is larger
+        else {
+            node.right = insertRec(node.right, isbn, title, author);
+        }
+
+        return node;
     }
 
-    private Book sea(Book r, int i) {
-        if (r == null || r.isbn == i) return r;
-        return (i < r.isbn) ? sea(r.left, i) : sea(r.right, i);
+    // Getter for root
+    public Book getRoot() {
+        return root;
+    }
+
+    // Setter for root
+    public void setRoot(Book root) {
+        this.root = root;
     }
 }
