@@ -1,5 +1,12 @@
+public interface LibraryADT {
+ 
+    void addBook(int isbn, String title, String author);
+ 
+    void searchBook(int isbn);
 
+    void borrowBook(int isbn);
 
-public class LibraryADT {
-    
+    void returnBook(int isbn);
+
+    void viewLatestHistory();
 }
