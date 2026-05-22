@@ -242,8 +242,10 @@ public class BookBST {
             Book successor = findMin(node.right);
             node.right = deleteRec(node.right, successor.getIsbn());
 
-            // Copy successor's data into current node
-            return new Book(successor.getIsbn(), successor.getTitle(), successor.getAuthor());
+            Book replacement = new Book(successor.getIsbn(), successor.getTitle(), successor.getAuthor());
+            replacement.left  = node.left;
+            replacement.right = node.right;
+            return replacement;
         }
 
         return node;
