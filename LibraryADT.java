@@ -1,12 +1,15 @@
 public interface LibraryADT {
- 
-    void addBook(int isbn, String title, String author);
- 
-    void searchBook(int isbn);
 
-    void borrowBook(int isbn);
+    void addBook(String isbn, String title, String author);
+ 
+    void searchBook(String isbn);
+ 
+    void borrowBook(String isbn);
 
-    void returnBook(int isbn);
+    void returnBook();
 
     void viewLatestHistory();
+
+    void displayCatalogue();
 }
+ 
